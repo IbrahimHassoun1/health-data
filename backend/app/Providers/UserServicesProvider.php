@@ -5,14 +5,14 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use App\Services\CustomAuthProvider;
 
-class AuthServicesProvider extends ServiceProvider
+class UserServicesProvider extends ServiceProvider
 {
     /**
      * Register services.
      *
      * @return void
      */
-   
+
 
     /**
      * Bootstrap services.
@@ -20,7 +20,7 @@ class AuthServicesProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-{
+    {
         Auth::provider('custom', function ($app, array $config) {
             return new CustomAuthProvider($app['hash'], $config['model']);
         });
