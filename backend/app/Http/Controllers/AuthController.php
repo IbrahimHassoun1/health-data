@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Providers\AuthServicesProvider;
+use Illuminate\Support\Facades\Auth;
 use Exception;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -49,6 +52,18 @@ class AuthController extends Controller
                 'message' => 'Error during login',
                 'data' => null
             ], 400);
+        }
+    }
+    public function OAuth2()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+            AuthServicesProvider::OAuth2($googleUser);
+            return redirect('/');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json(['success' => 'false', 'message' => 'Database error during OAuth2: ' . $e->getMessage()], 400);
+        } catch (Exception $e) {
+            return response()->json(['success' => 'false', 'message' => 'Error during OAuth2: ' . $e->getMessage()], 400);
         }
     }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
-
+use Exception;
 use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\ServiceProvider;
-use Exception;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class AuthServicesProvider extends ServiceProvider
 {
@@ -25,10 +27,10 @@ class AuthServicesProvider extends ServiceProvider
             $user = User::create($userData);
             $user['token'] = JWTAuth::fromUser($user);
             return $user;
-        } catch (\Exception $e) {
-            return response()->json([
-                "message" => "error: " . $e->getMessage(),
-            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            throw new Exception("Database error during signup: " . $e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception("Error during signup: " . $e->getMessage());
         }
 
     }
@@ -53,11 +55,43 @@ class AuthServicesProvider extends ServiceProvider
         }
     }
 
+    public static function OAuth2($googleUser)
+    {
+        try {
+            $user = User::updateOrCreate(
+                [
+                    'email' => $googleUser->getEmail(),
+                ],
+                [
+                    'phone' => '0000000000',
+                    'first_name' => 'first_name',
+                    'last_name' => 'last_name',
+                    'date_of_birth' => '1999-01-01',
+                    'place_of_birth' => 'unknown',
+                    'google_id' => $googleUser->getId(),
+                    'password' => bcrypt('random_password'),
+                    'password_confirmation' => bcrypt('random_password'),
+                    'street' => 'Default Street',
+                    'city' => 'Default City',
+                    'country' => 'Default Country',
+
+                ]
+            );
+
+            Auth::login($user);
+
+            return $user;
+        } catch (\Illuminate\Database\QueryException $e) {
+            throw new Exception("Database error during OAuth2: " . $e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception("Error during OAuth2: " . $e->getMessage());
+        }
+    }
     /**
      * Bootstrap services.
      */
     public function boot(): void
     {
-        //
+
     }
 }
