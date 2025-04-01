@@ -2,20 +2,12 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\RootRequest;
 
-class RegisterRequest extends FormRequest
+
+class RegisterRequest extends RootRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -26,14 +18,14 @@ class RegisterRequest extends FormRequest
     {
         return [
             'first_name' => 'required|string|max:255',
-            // 'last_name' => 'required|string|max:255',
-            // 'date_of_birth'=>'required|date',
-            // 'place_of_birth' => 'required|string|max:255',
-            // 'street' => 'required|string|max:255',
-            // 'city' => 'required|string|max:255',
-            // 'country' => 'required|string|max:255',
-            // 'email' => 'required|string|email|max:255|unique:users',
-            // 'password' => 'required|string|min:8|confirmed',
+            'last_name' => 'required|string|max:255',
+            'date_of_birth' => 'required|date',
+            'place_of_birth' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
         ];
     }
     /**
@@ -60,15 +52,5 @@ class RegisterRequest extends FormRequest
             'password.confirmed' => 'The password confirmation does not match.',
         ];
     }
-    public function failedValidation(Validator $validator)
-{
-    throw new HttpResponseException(
-        response()->json([
-            'data' => null,
-            'status' => 'validation_error',
-            'message' => 'Error on insert required data',
-            'validation' => $validator->errors()
-        ], 422)
-    );
-}
+
 }
