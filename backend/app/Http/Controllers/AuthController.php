@@ -63,30 +63,29 @@ class AuthController extends Controller
         }
         
     }
-    public function login(Request $request){
-        try{
-            $rules = [
-                'email'=>'required|string|exists:users',
-                'password'=>'required|string'
-            ];
-            $messages = [
-                'email.required'=>'Email is required',
-                'password.required'=>'Password is required'
-            ];
-            $validator = Validator::make($request->all(),$rules,$messages);
-            if($validator->fails()){
-                return response()->json([
-                    'success' => false,
-                    'errors' => $validator->errors(),
-                ], 422);  
-            }
-            $result = AuthServicesProvider::login($request->all());
-            return response()->json([
-                'message'=>'Logged in successfully',
-                'data'=>$result
-            ],200);
-        }catch(Exception $e){
+    public function login(RegisterRequest $request){
 
-        }
+        // try{
+        //     $rules = [
+        //         'email'=>'required|string|exists:users',
+        //         'password'=>'required|string'
+        //     ];
+        //     $messages = [
+        //         'email.required'=>'Email is required',
+        //         'password.required'=>'Password is required'
+        //     ];
+        //     $validator = Validator::make($request->all(),$rules,$messages);
+        //     if($validator->fails()){
+        //         return response()->json([
+        //             'success' => false,
+        //             'errors' => $validator->errors(),
+        //         ], 422);  
+        //     }
+        //     $result = AuthServicesProvider::login($request->all());
+        //     return response()->json([
+        //         'message'=>'Logged in successfully',
+        //         'data'=>$result
+        //     ],200);
+        // }catch(Exception $e){}
     }
 }
