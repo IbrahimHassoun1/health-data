@@ -9,6 +9,7 @@ const request = async ({ method, route, body, headers = {} }) => {
     const token = localStorage.getItem("token");
 
     const defaultHeaders = {
+      "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
 
       ...headers,
